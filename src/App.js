@@ -6,20 +6,42 @@ import './App.css';
 function App() {
 
   const [movies, setMovies] = useState([]);
-  // React-HTTP_Request-Loadig_State
+  // React-HTTP_Request-Loading_State
   const [isLoading, setIsloading] = useState(false);
-  const [error, setError] = useState(null);
+
+  // React-HTTP_Request-Error_Handling
+  // useState method is initiated for conditional rendering
+  const [httpError, setHttpError] = useState(null);
 
   // React-HTTP_Request-Fetch_API
   const fetchMoviesHandler = async () => {
-    // React-HTTP_Request-Loadig_State
+    // React-HTTP_Request-Loading_State
     // loading starts here
     setIsloading(true);
-    // We want to make sure we clear any previous errors here.
-    setError(null);
 
+    // React-HTTP_Request-Error_Handling
+    // We want to make sure we clear any previous errors here.
+    setHttpError(null);
+
+    // React-HTTP_Request-Error_Handling
     try {
-      const response = await fetch('https://swapi.py4e.com/api/film');
+      // React-HTTP_Request-Error_Handling
+      // Here this response will throw a 404 error if you have this link instead
+      // "https://swapi.py4e.com/api/film"
+      const response = await fetch('https://swapi.py4e.com/api/films');
+
+      // React-HTTP_Request-Error_Handling
+      // response.ok checks if response is ok
+      if (!response.ok) {
+
+        // response.status returns the status code for HTTP request. 
+        // When the program throws the error, it will automatically jump
+        // into the "catch" block and this line passes as an 'error'
+        // argument into the "catch" block.
+        // React-HTTP_Request-Error_Handling
+        throw new Error(`Something went wrong. HTTP status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       // data.results coming from the API object key, results is the key
@@ -36,12 +58,18 @@ function App() {
       });
 
       setMovies(transformedMovies);
-      // React-HTTP_Request-Loadig_State
-      // loading ends here
-      setIsloading(false);
-    } catch (error) {
 
+    } // React-HTTP_Request-Error_Handling
+    catch (error) {
+      // React-HTTP_Request-Error_Handling
+      // The error argument takes its content from the line
+      // throw new Error(`HTTP error! status: ${response.status}`);
+      setHttpError(error.message);
     }
+
+    // React-HTTP_Request-Loading_State
+    // loading ends here
+    setIsloading(false);
   }
 
 
@@ -88,12 +116,22 @@ function App() {
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        {/* React-HTTP_Request-Loadig_State */}
+        
+        {/* React-HTTP_Request-Loading_State */}
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {/* React-HTTP_Request-Loadig_State */}
+
+        {/* React-HTTP_Request-Loading_State */}
         {!isLoading && movies.length === 0 && <p>No results found!</p>}
-        {/* React-HTTP_Request-Loadig_State */}
+
+        {/* React-HTTP_Request-Loading_State */}
         {isLoading && <p>Loading...</p>}
+
+        {/* React-HTTP_Request-Error_Handling */}
+        {/* Here, if the httpError is "null", the conditional check will evaluate
+        to false. If there is an actual error which is assigned in catch block
+        up top, then httpError will hold a value other than null which will
+        evaluate to true. */}
+        {!isLoading && httpError && <p>{httpError}</p>}
       </section>
     </React.Fragment>
   );
