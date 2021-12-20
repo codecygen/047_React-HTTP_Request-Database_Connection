@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+// React-HTTP_Request-useEffect-Loading_Movies_On_Website_Load
+import React, { useState, useEffect, useCallback } from 'react';
 
 import MoviesList from './components/MoviesList';
+import AddMovie from './components/AddMovie';
 import './App.css';
 
 function App() {
@@ -13,8 +15,15 @@ function App() {
   // useState method is initiated for conditional rendering
   const [httpError, setHttpError] = useState(null);
 
+
   // React-HTTP_Request-Fetch_API
-  const fetchMoviesHandler = async () => {
+  // Here by default, because this function will change in every re-render
+  // we have to use "useCallback" hook to treat "fetchMoviesHandler" as not changing.
+  // Reason is that, we use this function in "useEffect" hook as a dependency.
+  // Because theoretically, leaving the useEffect hook with an empty array of dependency
+  // is a bad practice.
+  // Check "Optimization" section in REACT - TABLE OF CONTENTS.
+  const fetchMoviesHandler = useCallback (async () => {
     // React-HTTP_Request-Loading_State
     // loading starts here
     setIsloading(true);
@@ -70,8 +79,17 @@ function App() {
     // React-HTTP_Request-Loading_State
     // loading ends here
     setIsloading(false);
-  }
+  }, [])
 
+  // React-HTTP_Request-useEffect-Loading_Movies_On_Website_Load
+  // It is always a good practice to put dependencies
+  // Here by default, because this function will change in every re-render
+  // we have to use "useCallback" hook to treat "fetchMoviesHandler" as not changing.
+  // Check "Optimization" section in REACT - TABLE OF CONTENTS.
+  useEffect(() => {
+    // Here we can call the event that we also call with button clicking.
+    fetchMoviesHandler();
+  }, [fetchMoviesHandler]);
 
   // // Alternative asyncronous function handling
   // // React-HTTP_Request-Fetch_API
@@ -110,13 +128,20 @@ function App() {
   //   });
   // }
 
+  function addMovieHandler(movie) {
+    console.log(movie);
+  }
+
   return (
     <React.Fragment>
+      <section>
+        <AddMovie onAddMovie={addMovieHandler} />
+      </section>
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        
+
         {/* React-HTTP_Request-Loading_State */}
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
 
