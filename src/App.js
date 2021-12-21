@@ -146,16 +146,28 @@ function App() {
   // }
 
   // React-HTTP_Request-POST_Request
-  const addMovieHandler = movie => {
+  const addMovieHandler = async (movie) => {
     // React-HTTP_Request-POST_Request
-    fetch('https://react-httprequest-cf20a-default-rtdb.firebaseio.com/movies.json', {
+    const response = await fetch('https://react-httprequest-cf20a-default-rtdb.firebaseio.com/movies.json', {
       method: 'POST',
       // As we said, JSON and object are both treated as
       // Javascript object. To convert a JSON object or Javascript object to
       // a String, use "JSON.stringify(myObject)" method.
       // Javascript-JSON_to_Object-Object_to_String
-      body: JSON.stringify(movie)
+      body: JSON.stringify(movie),
+      // This section is not required by Firebase
+      // But a lot of REST APIs might require this line
+      // So setting this up is not a bad idea.
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
+
+    // Firebase will send back data when we send a POST request.
+    // Javascript-JSON_to_Object-Object_to_String
+    const data = await response.json();
+
+    console.log(data);
   };
 
   return (
