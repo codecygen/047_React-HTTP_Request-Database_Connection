@@ -23,7 +23,7 @@ function App() {
   // Because theoretically, leaving the useEffect hook with an empty array of dependency
   // is a bad practice.
   // Check "Optimization" section in REACT - TABLE OF CONTENTS.
-  const fetchMoviesHandler = useCallback (async () => {
+  const fetchMoviesHandler = useCallback(async () => {
     // React-HTTP_Request-Loading_State
     // loading starts here
     setIsloading(true);
@@ -35,9 +35,19 @@ function App() {
     // React-HTTP_Request-Error_Handling
     try {
       // React-HTTP_Request-Error_Handling
-      // Here this response will throw a 404 error if you have this link instead
+      // Here fetch API will throw a 404 error if you have
       // "https://swapi.py4e.com/api/film"
-      const response = await fetch('https://swapi.py4e.com/api/films');
+      // instead of
+      // "https://swapi.py4e.com/api/films"
+      // because the link will be wrong so the app
+      // will fail to fetch the data from the REST API.
+      // ================================================================
+      // Here, instead of using any of the links above
+      // we will use Firebase REST API so that we can have GET and
+      // POST request.
+      // React-HTTP_Request-Firebase_REST_API
+      // const response = await fetch('https://swapi.py4e.com/api/films');
+      const response = await fetch('https://react-httprequest-cf20a-default-rtdb.firebaseio.com/movies.json');
 
       // React-HTTP_Request-Error_Handling
       // response.ok checks if response is ok
@@ -51,6 +61,13 @@ function App() {
         throw new Error(`Something went wrong. HTTP status: ${response.status}`);
       }
 
+      // Note that despite the method being named json(), 
+      // the result is not JSON but is instead the 
+      // result of taking JSON as input and parsing it to 
+      // produce a JavaScript object.
+      // Basically it converts a JSON data, which is still an object in Javascript
+      // But "json()" method converts a JSON object to a pure Javascript object.
+      // Javascript-JSON_to_Object-Object_to_String
       const data = await response.json();
 
       // data.results coming from the API object key, results is the key
@@ -128,13 +145,23 @@ function App() {
   //   });
   // }
 
-  function addMovieHandler(movie) {
-    console.log(movie);
-  }
+  // React-HTTP_Request-POST_Request
+  const addMovieHandler = movie => {
+    // React-HTTP_Request-POST_Request
+    fetch('https://react-httprequest-cf20a-default-rtdb.firebaseio.com/movies.json', {
+      method: 'POST',
+      // As we said, JSON and object are both treated as
+      // Javascript object. To convert a JSON object or Javascript object to
+      // a String, use "JSON.stringify(myObject)" method.
+      // Javascript-JSON_to_Object-Object_to_String
+      body: JSON.stringify(movie)
+    });
+  };
 
   return (
     <React.Fragment>
       <section>
+        {/* React-HTTP_Request-POST_Request */}
         <AddMovie onAddMovie={addMovieHandler} />
       </section>
       <section>

@@ -1,3 +1,4 @@
+// React-HTTP_Request-POST_Request
 import React, { useRef } from 'react';
 
 import classes from './AddMovie.module.css';
@@ -7,21 +8,25 @@ function AddMovie(props) {
   const openingTextRef = useRef('');
   const releaseDateRef = useRef('');
 
-  function submitHandler(event) {
+  // React-HTTP_Request-POST_Request
+  const submitHandler = event => {
     event.preventDefault();
 
     // could add validation here...
 
+    // React-HTTP_Request-POST_Request
     const movie = {
       title: titleRef.current.value,
       openingText: openingTextRef.current.value,
       releaseDate: releaseDateRef.current.value,
     };
 
+    // React-HTTP_Request-POST_Request
     props.onAddMovie(movie);
-  }
+  };
 
   return (
+    // React-HTTP_Request-POST_Request
     <form onSubmit={submitHandler}>
       <div className={classes.control}>
         <label htmlFor='title'>Title</label>
