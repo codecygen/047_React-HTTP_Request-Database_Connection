@@ -47,6 +47,7 @@ function App() {
       // POST request.
       // React-HTTP_Request-Firebase_REST_API
       // const response = await fetch('https://swapi.py4e.com/api/films');
+      // React-HTTP_Request-GET_Request
       const response = await fetch('https://react-httprequest-cf20a-default-rtdb.firebaseio.com/movies.json');
 
       // React-HTTP_Request-Error_Handling
@@ -61,29 +62,43 @@ function App() {
         throw new Error(`Something went wrong. HTTP status: ${response.status}`);
       }
 
-      // Note that despite the method being named json(), 
-      // the result is not JSON but is instead the 
-      // result of taking JSON as input and parsing it to 
-      // produce a JavaScript object.
-      // Basically it converts a JSON data, which is still an object in Javascript
-      // But "json()" method converts a JSON object to a pure Javascript object.
-      // Javascript-JSON_to_Object-Object_to_String
+      // here response is an HTTP response with status code 
+      // which is gotten with fetch API.
+      // "json()" method extracts the data that is received with 
+      // "GET" or "POST" request. Despite the name is "json()", this method
+      // converts received data to a Javascript object.
+      // Javascript-HTTPResponseToDataObject
       const data = await response.json();
 
-      // data.results coming from the API object key, results is the key
-      // Check out the link to see it.
-      // Here we will transform the keys into the keys that we use in our
-      // props in "MoviesList.js"
-      const transformedMovies = data.results.map(movieData => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date
-        };
-      });
+      console.log(data);
 
-      setMovies(transformedMovies);
+      const loadedMovies = [];
+
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate
+        });
+      }
+
+      // // data.results coming from the API object key, results is the key
+      // // Check out the link to see it. (https://swapi.py4e.com/api/films)
+      // // Here we will transform the keys into the keys that we use in our
+      // // props in "MoviesList.js"
+      // const transformedMovies = data.results.map(movieData => {
+      //   return {
+      //     id: movieData.episode_id,
+      //     title: movieData.title,
+      //     openingText: movieData.opening_crawl,
+      //     releaseDate: movieData.release_date
+      //   };
+      // });
+
+      // setMovies(transformedMovies);
+
+      setMovies(loadedMovies);
 
     } // React-HTTP_Request-Error_Handling
     catch (error) {
@@ -153,7 +168,7 @@ function App() {
       // As we said, JSON and object are both treated as
       // Javascript object. To convert a JSON object or Javascript object to
       // a String, use "JSON.stringify(myObject)" method.
-      // Javascript-JSON_to_Object-Object_to_String
+      // Javascript-ObjectToJSON
       body: JSON.stringify(movie),
       // This section is not required by Firebase
       // But a lot of REST APIs might require this line
@@ -164,10 +179,16 @@ function App() {
     });
 
     // Firebase will send back data when we send a POST request.
-    // Javascript-JSON_to_Object-Object_to_String
+    // Javascript-HTTPResponseToDataObject
     const data = await response.json();
 
     console.log(data);
+
+    // This line fetches the data that is sent with POST request.
+    // Because we have an await in the response of the data above,
+    // fetchMoviesHandler() won't be called before POST request is
+    // completed.
+    fetchMoviesHandler();
   };
 
   return (

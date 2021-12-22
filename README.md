@@ -5,7 +5,7 @@ In this project, we will fetch the movies list from a Rest API.
 ## Firebase Database:
 - React-HTTP_Request-Firebase_REST_API
 
-Here we use Firabase Database. I created a new project with name react-httpRequest. Then from the project console, selected "Reacttime Database". This is a simpler database compared to "Firestore Database". Once created, I copy, pasted link to fetch API. The link was "https://react-httprequest-cf20a-default-rtdb.firebaseio.com". Then we added an extension like "/movies.json" to the end of the REST API. The is an endpoint which we will send fetch requests.
+Here we use Firabase Database. I created a new project with name react-httpRequest. Then from the project console, selected "Realtime Database". This is a simpler database compared to "Firestore Database". Once created, I copy, pasted link to fetch API. The link was "https://react-httprequest-cf20a-default-rtdb.firebaseio.com". Then we added an extension like "/movies.json" to the end of the REST API. The is an endpoint which we will send fetch requests and an instantaneous database will be created on Firebase.
 
 - React-HTTP_Request-Fetch_API
 
@@ -29,41 +29,35 @@ https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Async_awa
 
 Here, since this data fetching is not controlled by the user, we have to use "useEffect" hook. The button clicking event can also be called with "useEffect" hook which is used for calling the function upon new page load. Details are explained in the code block.
 
+- React-HTTP_Request-GET_Request
+
 - React-HTTP_Request-POST_Request
 
-- Javascript-JSON_to_Object-Object_to_String
+- Javascript-HTTPResponseToDataObject
 
-In Javascript, both JSON (Javascript Object Notation) and Object formats are treated as Javascript Object.
+"response" is an HTTP response with status code which is gotten with fetch API. "json()" method extracts the data that is received with "GET" or "POST" request. Despite the name is "json()", this method converts received data to a Javascript object. Javascript-HTTPResponseToDataObject
 
-```Javascript
-// This is a Javascript Object
-const myJavascriptObj = {
-    test1: 'test1',
-    test2: 'test2'
-};
+- Javascript-ObjectToJSON
 
-console.log(typeof(myJavascriptObj));
-// Outputs
-// > "object"
+In Javascript, JSON is a string with a formatted data, whereas object is a different format. There are different methods to convert them into each other. Examples are given down below.
+
+```javascript
+// Convert JSON to object
+const JSONData = '{"x":5,"y":"hello"}';
+const objData = JSON.parse(JSONData);
+
+console.log(objData);
+// Output: Object { x: 5, y: "hello" }
 ```
 
-```Javascript
-// This is a JSON (Javascript Object Notation), treated
-// as an object in Javascript
-const myJSONObj = {
-    "test1": "test1",
-    "test2": "test2"
-}
+```javascript
+// Convert object to JSON
+const objData = { x: 5, y: "hello", z: true };
+const JSONData = JSON.stringify(objData);
 
-console.log(typeof(myJSONObj));
-// Outputs
-// > "object"
+console.log(JSONData);
+// Output: '{"x":5,"y":"hello","z":true}'
 ```
 
-There are 2 Javascript methods used in this project.  
-1. Response.json()  
-The json() method of the Response interface takes a Response stream and reads it to completion. It returns a promise which resolves with the result of parsing the body text as JSON.  
-Note that despite the method being named json(), the result is not JSON but is instead the result of taking JSON as input and parsing it to produce a JavaScript object.
 
-2. JSON.stringify(argument)  
-The JSON.stringify() method converts a JavaScript object or value to a JSON string, optionally replacing values if a replacer function is specified or optionally including only the specified properties if a replacer array is specified.
+In order to convert a JSON data to object use "JSON.parse(JSONData)". In order to convert a Javascript object to a JSON data, use "JSON.stringify(javascriptObject)".
